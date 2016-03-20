@@ -1,0 +1,55 @@
+Return-Path: <sender@cratebind.com>
+Received: from mail-ob0-f170.google.com (mail-ob0-f170.google.com [209.85.214.170])
+ by inbound-smtp.us-west-2.amazonaws.com with SMTP id 2jte62k1vi6jbdfiggjq2t0trovl0igehu5hg9g1
+ for recipient@emails.cratebind.com;
+ Sun, 20 Mar 2016 19:45:27 +0000 (UTC)
+X-SES-Spam-Verdict: PASS
+X-SES-Virus-Verdict: PASS
+Received-SPF: none (spfCheck: 209.85.214.170 is neither permitted nor denied by domain of cratebind.com) client-ip=209.85.214.170; envelope-from=sender@cratebind.com; helo=mail-ob0-f170.google.com;
+Authentication-Results: amazonses.com;
+ spf=none (spfCheck: 209.85.214.170 is neither permitted nor denied by domain of cratebind.com) client-ip=209.85.214.170; envelope-from=sender@cratebind.com; helo=mail-ob0-f170.google.com;
+ dkim=pass header.i=@cratebind-com.20150623.gappssmtp.com;
+Received: by mail-ob0-f170.google.com with SMTP id fp4so159912444obb.2
+        for <recipient@emails.cratebind.com>; Sun, 20 Mar 2016 12:45:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cratebind-com.20150623.gappssmtp.com; s=20150623;
+        h=mime-version:from:date:message-id:subject:to;
+        bh=DdZs72wnlbFubT3SKtTDudAnXJmq/jQQJ9LK+aFXOzc=;
+        b=eED5FBsOktAujcyJRNLWrLT0nOU2TrNFwwz9YGqnheicVHMYCKT8CmWiOonktzTcTa
+         uK68HZRE4kTdgG5ol76mTDfODrqrumhVP7gws0V/uOgopf7Z2GyWMa/WB1Sm7dPbE0AX
+         FaxfQj2VTbNK+0VsCtuKQamDR0RB4JxhwmQ/Fbe4WprKG1IHRwtJiJuDurC7/PTby+ur
+         1CSGyao2p76Kx0J1YAPZb2HJcNSYBlrNe7Dt5m10l/bn7Ah4u3VK1rYokS6Nit8WvlE8
+         HDBH5awhnDAPKna3ggAZOo9gZaea6sOlX+BCgAJ2OGZk9n7tEqfkLloCZUk43MOa+GK0
+         Y/XQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20130820;
+        h=x-gm-message-state:mime-version:from:date:message-id:subject:to;
+        bh=DdZs72wnlbFubT3SKtTDudAnXJmq/jQQJ9LK+aFXOzc=;
+        b=jySAn1oZk5qAn+jYPOsAs+J7iH4KsjviHEpfHUUitWn8LbZzKgwE9PwrFNWynnFeDC
+         TZPA2tZrnmxc4Vv0rC6oMXKBWhnvrNGs8THO0V0CJdCLR2HL42Nj43F/Z1h+gd74R/Eh
+         fUm9d/AlSrlInInfGHciY1EQ/+bI+0rAEATkqCYidgh8kq+SjVyGq/gOUIv3h7vVaw30
+         JoCHCoZDXSEU+G0t+X2eIoZcBEBoUMv11GwhUWOr/ij11btzJ/pFF+wHRPU5RMWzYCk/
+         8pumr7gtuSK1MhnRLhPugZmx29HcSvJ4aizMDW2dW2nRu64v/w0RJCqTNxk2+C13aIbY
+         ytkg==
+X-Gm-Message-State: AD7BkJIQotikFUpt4L9SBX5mdCaEV62coZXSPmjFsPEitWujcBv8hTWrolBwjKvlAfAUGyE4MhDyosayubsPig==
+X-Received: by 10.182.79.200 with SMTP id l8mr16823677obx.18.1458503126323;
+ Sun, 20 Mar 2016 12:45:26 -0700 (PDT)
+MIME-Version: 1.0
+From: Sender CrateBind <sender@cratebind.com>
+Date: Sun, 20 Mar 2016 19:45:16 +0000
+Message-ID: <CAG=8Ms7cZ2+bQ0-7DzubkFJHjhKn3dVBdh42VRcCW5S2J0mBMQ@mail.gmail.com>
+Subject: test email
+To: recipient@emails.cratebind.com
+Content-Type: multipart/alternative; boundary=089e0122a882bfac99052e80388b
+
+--089e0122a882bfac99052e80388b
+Content-Type: text/plain; charset=UTF-8
+
+some body
+
+--089e0122a882bfac99052e80388b
+Content-Type: text/html; charset=UTF-8
+
+<div dir="ltr">some body</div>
+
+--089e0122a882bfac99052e80388b--
