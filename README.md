@@ -42,6 +42,39 @@ You will need to create a standard S3 bucket with a custom configuration for SES
 2. Click Create New Function from the Lambda console
 3. On the Select Blueprint screen, click Skip at the bottom right
 4. Enter a name and description for your Lambda function and paste in the following code.  Replace the domain 'http://example.com' with the domain where you are deploying.
+```
+var AWS = require('aws-sdk');
+var https = require('https');
+
+exports.handler = function(event, context) {
+
+    var sesNotification = event.Records[0].ses;
+    var messageId = sesNotification.mail.messageId;
+    var receipt = sesNotification.receipt;
+    var from = sesNotification.mail.commonHeaders.from[0];
+    var appUrl = 'https://www.example.com'
+    var options = {
+        host: 'www.example.com',
+        port: 443,
+        path: '/emails/incoming?token=test_token&message_id=' + messageId,
+        method: 'POST',
+        headers: {}
+    };
+    console.log('message ID', messageId);
+
+    var req = https.request(options, function(res) {
+        context.succeed();
+        console.log('STATUS: ' + res.statusCode);
+        res.on('data', function(chunk) {
+            console.log('BODY: ' + chunk);
+        });
+    }).on('error', function(e) {
+        console.log('FAILIRE: ' + e.message)
+        context.done(null, 'FAILURE');
+    });
+    req.end();
+}
+```
 
 ![Image of Lambda Setup](tutorial/lambda_setup.png)
 5. For Role, just select basic execution role and a new tab will open inside your IAM console asking to create this new role.
