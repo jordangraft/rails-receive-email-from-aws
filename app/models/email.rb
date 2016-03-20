@@ -1,9 +1,7 @@
 class Email < ActiveRecord::Base
 
 	def self.process_incoming_email(message_id)
-		return Email.new unless message_id
 		obj = AWS::S3.new.buckets['my-email-bucket'].objects[message_id]
-		return Email.new unless obj
 		contents = obj.read
 		from = contents.match(/(?<=From: )(.*?)(?=\n)/).try(:to_s)
 		to = contents.match(/(?<=To: )(.*?)(?=\n)/).try(:to_s)
@@ -16,4 +14,5 @@ class Email < ActiveRecord::Base
 			body: body
 		)
 	end	
+
 end
