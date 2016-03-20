@@ -139,3 +139,38 @@ This is the Webmock setting to stub the request to S3:
 
 ### Controller Action
 Next we will build a test to spec the controller action that receive the POST from AWS Lambda, validates the token and passes the message_id to the model method we just build and tested.
+
+The controller action looks like this.  You obviously will want to create a different token than just 'test_token' and will want to set it as an ENV variable.
+
+```
+  ##
+  # Receive the AWS post, validate the token and pass to our model method
+  def incoming
+    if params[:token] && (params[:token] == 'test_token')
+      @email = Email.process_incoming_email(params[:message_id])
+      if @email.valid?
+        render text: 'email created', status: :created 
+      else
+        render text: @email.errors.full_messages, status: :unprocessable_entity
+      end
+    else
+      render text: 'unauthorized', status: :unauthorized
+    end    
+  end
+```
+
+and the test like this:
+
+```
+  context 'receive a post from Lambda' do
+    it 'should be receive a message from email via Lambda' do
+      expect { post(:incoming, token: 'test_token', message_id: 'test') }.to change { Email.count }.by(1)
+    end
+    
+    it 'should be be unauthorized without the lamda token' do
+      response = post :incoming, message_id: 'test'
+      expect(response.status).to eq(401)
+    end
+  end
+
+```
