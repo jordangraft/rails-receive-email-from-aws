@@ -116,7 +116,7 @@ Additional instructions on setting up SES to receive email if you get stuck [AWS
 Create a basic model and controller that will receive the post response from AWS Lambda and save the email in the database.
 
 ```
-rails g scaffold email from:string body:text to:string
+rails g scaffold email from:string body:text to:string subject:string
 ```
 
 ### Model Method
@@ -135,6 +135,31 @@ This is the Webmock setting to stub the request to S3:
     stub_request(:get, "https://my-email-bucket.s3.amazonaws.com/test")
       .to_return(status: 200, body: File.read('spec/support/lambda_email'))
   end
+```
+
+And this is the model method that we have built to handle the incoming messages:
+
+```
+class Email < ActiveRecord::Base
+
+  def self.process_incoming_email(message_id)
+    return Email.new unless message_id
+    obj = AWS::S3.new.buckets['my-email-bucket'].objects[message_id]
+    return Email.new unless obj
+    contents = obj.read
+    from = contents.match(/(?<=From: )(.*?)(?=\n)/).try(:to_s)
+    to = contents.match(/(?<=To: )(.*?)(?=\n)/).try(:to_s)
+    subject = contents.match(/(?<=Subject: )(.*?)(?=\n)/).try(:to_s)
+    body = contents.match(/(?<=Content-Type: text\/html; charset\=UTF-8)(.*?)(?=--)/m).try(:to_s)
+    self.create(
+      from: from,
+      to: to,
+      subject: subject,
+      body: body
+    )
+  end 
+end
+
 ```
 
 ### Controller Action
