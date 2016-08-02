@@ -132,7 +132,7 @@ This is the Webmock setting to stub the request to S3:
 #spec/rails_helper.rb
   config.before do
     WebMock.disable_net_connect!(allow_localhost: true)
-    stub_request(:get, "https://my-email-bucket.s3.amazonaws.com/test")
+    stub_request(:get, "https://my-email-bucket.s3-us-west-2.amazonaws.com/test")
       .to_return(status: 200, body: File.read('spec/support/lambda_email'))
   end
 ```
@@ -141,18 +141,12 @@ And this is the model method that we have built to handle the incoming messages:
 
 ```
   def self.process_incoming_email(message_id)
-    obj = AWS::S3.new.buckets['my-email-bucket'].objects[message_id]
-    contents = obj.read
-    from = contents.match(/(?<=From: )(.*?)(?=\n)/).try(:to_s)
-    to = contents.match(/(?<=To: )(.*?)(?=\n)/).try(:to_s)
-    subject = contents.match(/(?<=Subject: )(.*?)(?=\n)/).try(:to_s)
-    body = contents.match(/(?<=Content-Type: text\/html; charset\=UTF-8)(.*?)(?=--)/m).try(:to_s)
-    self.create(
-      from: from,
-      to: to,
-      subject: subject,
-      body: body
-    )
+	s3 = Aws::S3::Client.new(region: 'us-west-2')
+		obj = s3.get_object(bucket: 'keyman-emails', key: message_id)
+		mail = Mail.new(obj.body.read)
+		from, to = mail.from.join(', '), mail.to.join(', ')
+		subject, body = mail.subject, mail.body.raw_source
+		self.create(from: from, to: to, subject: subject, body: body)
   end 
 
 ```
